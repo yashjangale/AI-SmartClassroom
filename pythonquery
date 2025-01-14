@@ -4,5 +4,5 @@ client = MongoClient("mongodb+srv://gayatrikurulkar:gaya031202@quiz-cluster.rde4
 db = client["quiz-db"]
 scores_collection = db["scores"]
 
-# Fetch all score data
+# Fetch all score data 
 scores_data = scores_collection.find()
