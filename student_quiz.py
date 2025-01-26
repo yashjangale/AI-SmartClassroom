@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import pandas as pd
 from datetime import datetime
@@ -7,7 +6,7 @@ from pymongo import MongoClient
 # MongoDB connection setup
 @st.cache_resource
 def get_database():
-    client = MongoClient(os.environ.get('MONGO_DB_URI'))  # Replace with your MongoDB connection string
+    client = MongoClient("mongodb+srv://gayatrikurulkar:gaya031202@quiz-cluster.rde4k.mongodb.net/?retryWrites=true&w=majority&appName=quiz-cluster")  # Replace with your MongoDB connection string
     return client
 
 def load_quizzes(subject):
@@ -57,7 +56,7 @@ def start_quiz(quiz):
     st.session_state["quiz_started"] = True
     
     # Rerun the app to move to the quiz attempt page
-    st.experimental_rerun()  # Use the correct method for rerun
+    
 
 def attempt_quiz():
     quiz = st.session_state["current_quiz"]
@@ -86,7 +85,7 @@ def attempt_quiz():
         # Reset session state after quiz completion
         del st.session_state["current_quiz"]
         del st.session_state["quiz_started"]
-        st.experimental_rerun()  # Correct rerun after quiz completion
+        
 
 if __name__ == "__main__":
     # Ensure that the correct state is checked when running the app
