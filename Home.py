@@ -116,7 +116,7 @@ if st.button("Join Course"):
         if result is None:
             st.error("Invalid Course ID. Please try again.")
         elif result == "already_enrolled":
-            st.warning("You are already enrolled in this course.")
+            st.warning("You are already enrolled in this course.")  
         else:
             st.success(f"Successfully enrolled in {result}!")
             st.session_state["active_course"] = result  # Auto-select the new course
