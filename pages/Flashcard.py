@@ -197,7 +197,7 @@ def submit_answer(idx, selected_answer, correct_answer, question, note):
 # api_key = st.text_input("Enter your OpenAI API Key:", type="password", 
 #                        help="Your API key is required to use GPT-4o Mini.")
 
-api_key = st.secrets['OPENAI_API_KEY']
+api_key = os.getenv('OPENAI_API_KEY')
 if api_key:
     st.session_state.openai_api_key = api_key
 
