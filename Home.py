@@ -3,7 +3,6 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
-
 # Load environment variables
 load_dotenv()
 
@@ -51,23 +50,23 @@ def get_enrolled_courses(student_id):
     student = students_collection.find_one({"student_id": student_id})
     if not student:
         return []
-    
+
     course_ids = student.get("enrolled_courses", [])
     courses = []
-    
+
     for course_id in course_ids:
         course = courses_collection.find_one({"course_id": course_id})
         if course:
             courses.append((course_id, course["course_name"]))
-    
+
     return courses
 
 def enroll_in_course(student_id, course_id):
-    """Enroll a student in a course using course_id."""
+    """Enroll a student in a course using course_id and push to subj DB."""
     course = courses_collection.find_one({"course_id": course_id})
     if not course:
         return None  # Invalid course ID
-    
+
     course_name = course["course_name"]
     student = students_collection.find_one({"student_id": student_id})
 
@@ -83,6 +82,14 @@ def enroll_in_course(student_id, course_id):
         )
     else:
         return "already_enrolled"
+
+    # Push student_id to subj.<enroll_stud> collection
+    subj_db = client[course_name.lower()]  # lowercase to match db naming style
+    enroll_stud_collection = subj_db["enroll_stud"]
+    
+    # Avoid duplicate entries
+    if not enroll_stud_collection.find_one({"student_id": student_id}):
+        enroll_stud_collection.insert_one({"student_id": student_id})
 
     return course_name
 
@@ -116,7 +123,7 @@ if st.button("Join Course"):
         if result is None:
             st.error("Invalid Course ID. Please try again.")
         elif result == "already_enrolled":
-            st.warning("You are already enrolled in this course.")  
+            st.warning("You are already enrolled in this course.")
         else:
             st.success(f"Successfully enrolled in {result}!")
             st.session_state["active_course"] = result  # Auto-select the new course
